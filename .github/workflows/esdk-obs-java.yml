@@ -2,15 +2,23 @@ name: ci esdk-obs-java
 
 on: [push]
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e # v1.2.0
     - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1.4.4
       with:
         java-version: 1.8
     - name: 编译常规的 Java SDK
@@ -26,7 +34,7 @@ jobs:
       
     - name: 上传Java SDK输出件
       if: success()
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@0c366cb4fc8897159c94880f94b55bc716ad6a66 # master
       with:
         # Artifact name
         name: esdk-obs-java-en-on-github
@@ -41,7 +49,7 @@ jobs:
       run: cp /home/runner/work/huaweicloud-sdk-java-obs/huaweicloud-sdk-java-obs/target/esdk-obs-android-* ./esdk-obs-android-en-on-github
     - name: 上传Android SDK输出件
       if: success()
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@0c366cb4fc8897159c94880f94b55bc716ad6a66 # master
       with:
         # Artifact name
         name: esdk-obs-android-en-on-github
